@@ -1,5 +1,5 @@
 <?php 
-require_once 'search.php';
+require_once 'search/search.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Read the JSON request body
