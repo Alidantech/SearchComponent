@@ -31,7 +31,7 @@ function SearchQuery($keyword, $tables) {
     if ($result) {
         $data = array(); // Initialize an array to store the data
         while ($row = $result->fetch_assoc()) {
-            $data[] = $row; // Add each row to the array
+            $data[] = $row;
         }
 
         // Convert the array to JSON
