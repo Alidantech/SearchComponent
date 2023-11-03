@@ -1,50 +1,49 @@
 <?php
 
-function createQuery($tables, $keyword) {
-    // Parse the JSON data into a PHP array
-    $data = $tables;
-    if ($data === null) {
-        return "Invalid JSON data";
-    }
-
+function createQuery($data, $keyword) {
+    
     // Determine the number of tables in the JSON data
     $numTables = count($data['tables']);
 
     if ($numTables > 1) {
-        // If there are multiple tables, find common columns
-        $commonColumns = findCommonColumns($data['tables']);
-
-        // Initialize arrays to store unique columns and tables
-        $uniqueColumns = [];
-        $uniqueTables = [];
+        // Find common columns (the first column from each table)
+        $commonColumns = [];
+        foreach ($data['tables'] as $table => $tableColumns) {
+            $commonColumns[] = "$table." . $tableColumns[0];
+        }
 
         // Build the JOIN query
-        $selectColumns = [];
+        $joinConditions = [];
 
         foreach ($data['tables'] as $table => $tableColumns) {
+            $joinConditions[] = "$table." . $tableColumns[0] . " = " . reset($commonColumns);
+        }
+
+        $selectColumns = [];
+        foreach ($data['tables'] as $table => $tableColumns) {
             foreach ($tableColumns as $column) {
-                $uniqueColumnKey = "$table.$column";
-                if (!isset($uniqueColumns[$uniqueColumnKey])) {
-                    $selectColumns[] = $uniqueColumnKey;
-                    $uniqueColumns[$uniqueColumnKey] = true;
-                }
-            }
-            $uniqueTables[$table] = true;
-        }
-
-        $joinQuery = "SELECT " . implode(', ', $selectColumns) . " FROM " . implode(' JOIN ', array_keys($uniqueTables)) . " WHERE ";
-        
-        // Initialize an array to store conditions for each column
-        $conditions = [];
-
-        // Add conditions for the join query using the LIKE operator
-        foreach ($uniqueTables as $table => $_) {
-            foreach ($data['tables'][$table] as $column) {
-                $conditions[] = "$table.$column LIKE '%$keyword%'";
+                $selectColumns[] = "$table.$column";
             }
         }
 
-        $joinQuery .= implode(' OR ', $conditions);
+        $joinQuery = "SELECT " . implode(', ', $selectColumns) . " FROM " . implode(' JOIN ', array_keys($data['tables']));
+
+        if (!empty($joinConditions)) {
+            $joinQuery .= " ON " . implode(' AND ', $joinConditions);
+        }
+
+        $whereConditions = [];
+
+        // Add conditions for the WHERE clause using the LIKE operator
+        foreach ($data['tables'] as $table => $tableColumns) {
+            foreach ($tableColumns as $column) {
+                $whereConditions[] = "$table.$column LIKE '%$keyword%'";
+            }
+        }
+
+        if (!empty($whereConditions)) {
+            $joinQuery .= " WHERE " . implode(' OR ', $whereConditions);
+        }
 
         return $joinQuery;
     } elseif ($numTables === 1) {
@@ -57,7 +56,7 @@ function createQuery($tables, $keyword) {
 
         // Loop through columns and create a condition for each one using the LIKE operator
         foreach ($columns as $column) {
-            $conditions[] = "$column LIKE '%$keyword%'";
+            $conditions[] = "$table.$column LIKE '%$keyword%'";
         }
 
         // Combine conditions using "OR" to search for the keyword in any column
