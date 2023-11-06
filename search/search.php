@@ -18,7 +18,7 @@ class Search {
             $result = $this->db->query($sql);
         } catch (Exception $e) {
             $errorData = array(
-                'error' => 'Error',
+                'error' => 'Query Excution failed',
                 'message' => $e->getMessage()
             );
             

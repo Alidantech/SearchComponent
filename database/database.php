@@ -68,10 +68,10 @@ class Database {
 
     private function returnJsonError($messages) {
         $errorData = array(
-            'error' => 'Error',
+            'error' => 'Database Connection failed.',
             'messages' => $messages
         );
-
+        fopen('config/config.php', 'w');
         // Encode the error data as JSON and return it
         echo json_encode($errorData);
         exit();
