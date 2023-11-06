@@ -1,18 +1,24 @@
 # Search Component Documentation
 
-## Requirements
+This is a database search component. It enables you to search data from your database. by just providing the database configurations and then you enter a keyword and you recieve the results.
+
+## Dependencies
+
+- Database
 
 ### Requires Interface
 
-- The search component requires a configured database that contains relevant data.
-- It needs the following database configuration parameters:
-  - `host`: The hostname of the database server.
-  - `user`: The username for database access.
-  - `password`: The password for the user.
-  - `name`: The name of the database.
-- Optionally, the search component can accept a table name from which to search.
-- It needs a keyword for performing the search.
-- It requires specification of the column(s) to search for the keyword.
+1. Requires a `configured database`.
+2. Requires database configuration parameters inside a `db.env` file:
+    ```.env
+    #ADD your database configurations here.
+      DB_HOST = 'host'
+      DB_USER = 'username'
+      DB_PASSWORD = 'password'
+      DB_NAME = 'name'
+    ```
+3. Requires the `table` and `columns` to search from.
+4. Requires a `Keyword` to perform the search.
 
 ### Provides Interface
 
@@ -20,15 +26,6 @@
 - It returns search results from the database in JSON format.
 - Provides a method to search from a single table.
 - Provides a method to search from multiple tables.
-
-## Table to Search Specification
-
-Specify the details of the table to search, including the table name and its columns.
-
-## Columns to Search Specification
-
-Specify the details of the columns that can be searched, including column names and their data types.
-
 
 
 

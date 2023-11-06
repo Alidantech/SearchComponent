@@ -1,5 +1,7 @@
 <?php 
+#get the external files
 require_once 'search/search.php';
+require_once 'config/check_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Read the JSON request body
@@ -21,6 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function SearchQuery($keyword, $tables) {
+    #define path to the config files
+    $configFile = 'config/config.php';
+    $envFile = '../db.env';
+    checkConfigFile($configFile, $envFile);
 
     $searchComponent = new Search();
     $searchComponent->setDatabaseConfig('config/config.php');
