@@ -36,17 +36,16 @@ function SearchQuery($keyword, $tables) {
 
     if ($result) {
         $data = array(); // Initialize an array to store the data
+       
         while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
+                $data[] = $row;
+            }
 
-        // Convert the array to JSON
+           
         $jsonResult = json_encode($data);
 
         return $jsonResult;
-    } else {
-        // Handle the case where the query fails
-        die("Mysqli query failed: " . $searchComponent->getConnection()->error);
+                
     }
 }
 

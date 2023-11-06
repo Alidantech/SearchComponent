@@ -17,7 +17,14 @@ class Search {
             $sql = createQuery($tables, $queryKeyword);
             $result = $this->db->query($sql);
         } catch (Exception $e) {
-            return "Error: " . $e->getMessage();
+            $errorData = array(
+                'error' => 'Error',
+                'message' => $e->getMessage()
+            );
+            
+            // Encode the error data as JSON
+            echo json_encode($errorData);
+            exit();
         }
 
         return $result;
